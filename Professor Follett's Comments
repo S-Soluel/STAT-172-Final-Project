@@ -1,0 +1,7 @@
+What is datetime and monthyear? I can help you convert these into dates, which are stored as numeric types in R. See ?as.Date() if interested. 
+- 
+Perhaps the season / month of year in which the animal was surrendered is important. 
+I wonder if the length of the name is important? You could create another variable containing the number of characters in the name; e.g., maybe long names are offputting to potential adopters. 
+Consider other feature engineering you can do to increase the number of potential x variables you have to work with. 
+Github is great - do note that simply using it is not enough. Just to be clear, I'll want proof that you used it consistently (each member is committing/pushing and pulling) and correctly (no funny business about simply re-uploading things everytime you change it like you might do on "Dropbox"). I'll also want to see a README file. 
+Lots of potential for interesting graphics here, perhaps a cat-themed color palette?! Exploring multivariate interactions will be interesting too. e.g., if spay/neutering and sex are both important, does the effect of spay/neutering depend on the sex? 
