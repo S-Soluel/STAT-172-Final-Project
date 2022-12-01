@@ -1,0 +1,17 @@
+1) What is datetime and monthyear? I can help you convert these into dates, which are stored as numeric types in R. See ?as.Date() if interested. 
+- it looks like datetime and monthyear are very similar variables, they are also separated with the same information in the outcome_month, outcome_year, 
+outcome_weekday and outcome_hour. it may benefit us to stick with these separated variables in our models
+2) Perhaps the season / month of year in which the animal was surrendered is important. 
+- we can use the outcome_month to expand on this idea, we could create a new variable grouping the months into seasons to analyze as well.
+3) I wonder if the length of the name is important? You could create another variable containing the number of characters in the name; e.g., maybe long 
+names are offputting to potential adopters. 
+- we can definitely create a numeric variable to analyze this if we choose
+4) Consider other feature engineering you can do to increase the number of potential x variables you have to work with. 
+- let's ponder this for our next meeting
+5) Github is great - do note that simply using it is not enough. Just to be clear, I'll want proof that you used it consistently (each member is 
+committing/pushing and pulling) and correctly (no funny business about simply re-uploading things everytime you change it like you might do on "Dropbox"). 
+I'll also want to see a README file. 
+- let's continue what we're doing with this project page and utilize the review feature specifically as we build out our code
+6) Lots of potential for interesting graphics here, perhaps a cat-themed color palette?! Exploring multivariate interactions will be interesting too. 
+e.g., if spay/neutering and sex are both important, does the effect of spay/neutering depend on the sex? 
+- definitely use RColorBrewer and ggplot2, once we get our x variables in order we can begin our visualizations
