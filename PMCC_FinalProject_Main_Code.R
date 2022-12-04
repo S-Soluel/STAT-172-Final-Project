@@ -140,5 +140,245 @@ table(cats$outcome_age_group)
 str(cats$outcome_age_group)
 # Looks all good! We can go ahead and proceed to the next stage
 
+###### DATA PREPARATION FOR RANDOM FOREST ---------
+# Before fitting a random forest, we want to create a subset of our data that does not
+# include variables such as "age_upon_outcome" because we do not want to utilize
+# variables that went into the creation of some of our newer X variables. 
+# The data given from these two variables will be very highly correlated, which 
+# could mess with our x variable selection. 
+
+# Additionally, the variable "animal_type" is useless in the case of this database, 
+# as ALL animals observed were cats. The "age_group" variable provided by the 
+# dataset will be replaced as well, as there is no context of the scale, the age groups given additionally do not make sense,
+# and we also created our own variable for age groups. 
+
+# Additionally removed: outcome_age_.days. and outcome_age_.years.
+#                       do not fully make sense in this context, and we have a
+#                       variable that already deals with this. 
+# The count variable has "1" noted for every single value, therefore this will not be
+# useful in creating a model, and will be removed prior to fitting of a random forest. 
+summary(cats)
+str(cats) # Prior creating a subset, we have 41 variables. 
+cats <- subset(cats, select = -c(age_upon_outcome, animal_id, animal_type, 
+                                 date_of_birth, datetime, monthyear, 
+                                 outcome_subtype, outcome_type, sex_upon_outcome, 
+                                 count, sex_age_outcome, age_group, dob_monthyear,
+                                 outcome_age_.days., outcome_age_.years.))
+# Check that variables subset out of dataset are correctly removed, and 
+# that no issues have happened. 
+summary(cats)
+str(cats)
+# We took out 15 variables, and now it shows the data set has 26 variables. 
+# This checks out.
+
+# TROUBLESHOOTING IN TREE FITTING
+
+# In attempting to fit our base forest, we encountered an error that randomForest.default()
+# isn't able to handle categorical predictors with more than 53 categories, 
+# so several additional variables will be removed before attempting again. 
+cats$name <- factor(cats$name)
+str(cats$name) # There are 7410 levels in name, this will need to be removed for certain
+# Variables to be removed are name, color, and breed as they all have 53+ levels
+cats <- subset(cats, select = -c(name, color, breed))
+str(cats) # Checking that everything dropped as expected, dropping 3 additional
+# variables leaves us at 23 which checks out
+
+# Attempting to fit our base forest using this still gives us an error about 
+# not being able to create this with 53+ categorical levels, must mean more than
+# 53 total. Going to create one last subset which will include our binary y variable
+# and 9 possible x variables we are interested in looking into. 
+
+cats <- subset(cats, select = c(outcome_bin, sex, Spay.Neuter, outcome_weekday,
+                                  outcome_hour, cfa_breed, domestic_breed, 
+                                  season_outcome, name_length, outcome_age_group))
+summary(cats)
+str(cats)
+# Double checking that everything worked properly in subsetting, then
+# can finally get back to tree fitting and interpretations
+
+## START OF ADDITIONAL CODE FROM 12/3/2022 ##
+
+### TREE FITTING AND INTERPRETATION --------------
+
+# Set the seed and in order to create training and testing data frames
+RNGkind(sample.kind = "default")
+set.seed(14038450) # picked arbitrary number
+
+train.idx <- sample(x = 1:nrow(cats), size = .8*nrow(cats))
+# create training data
+train.df <- cats[train.idx, ]
+
+# create testing data
+test.df <- cats[-train.idx, ]
+str(train.df) # 23536 observations in training data set
+str(test.df) # # 5885 observations in testing data set
+# totals up to 29421 observations -- all accounted for!
+
+# set seed again before fitting forest
+set.seed(14038450)
+
+# fitting our baseline forest
+baseforest <- randomForest(outcome_bin ~., 
+                           # including all variables left in our subset of cats
+                           # to see which are important to our interpretations
+                         data = train.df, #TRAINING DATA
+                         ntree = 1000, # this is our B
+                         mtry = 3, # number of x variables to sample
+                         # choose mtry -> sqrt(9) = 3
+                         importance = TRUE)
+
+baseforest
+# Looking at the results of our base random forest
+# Call:
+#   randomForest(formula = outcome_bin ~ ., data = train.df, ntree = 1000,      mtry = 3, importance = TRUE) 
+# Type of random forest: classification
+# Number of trees: 1000
+# No. of variables tried at each split: 3
+# 
+# OOB estimate of  error rate: 12.11%
+# Confusion matrix:
+#   No   Yes class.error
+# No  10454  1712    0.140720
+# Yes  1138 10232    0.100088
+# 
+# Calculating the OOB error rate in forest
+mean(predict(baseforest) != train.df$outcome_bin)
+# 0.1210911
+# The OOB error for our base forest is about 12.11%
+
+
+# TUNING FOREST ------------
+# Now go ahead and tune forest
+plot(baseforest) # can plot base forest to see general trend of error rate,
+                # by the number of trees
+# create sequence of m values we want to try, 
+# ranging this from 1 to 9 possible variables being put in each tree in the forest.
+
+mtry <- c(1:9)
+
+# make room for m and oob error (empty data frame)
+keeps <- data.frame(m=rep(NA, length(mtry), OOB_error_rate = rep(NA, length(mtry))))
+
+for(idx in 1:length(mtry)){
+  print(paste0("Fitting m = ",mtry[idx]))
+  tempforest <- randomForest(outcome_bin ~., 
+                             data = train.df,
+                             ntree = 1000,
+                             mtry = mtry[idx]) # mtry is varying
+  
+  # record OOB error, corresponding to mtry for each forest fit
+  keeps[idx, "m"] <- mtry[idx]
+  keeps[idx, "OOB_error_rate"] <- mean(predict(tempforest) != train.df$outcome_bin)
+  
+}
+keeps # Show results for each value of m and the corresponding OOB error rate
+# m OOB_error_rate
+# 1 1      0.1403807
+# 2 2      0.1269120
+# 3 3      0.1214735
+# 4 4      0.1238953
+# 5 5      0.1293763
+# 6 6      0.1326054
+# 7 7      0.1343899
+# 8 8      0.1358345
+# 9 9      0.1362593
+
+# Create a plot showing these values of m compared to OOB error rates
+# plot the OOB error rate vs m
+ggplot(data = keeps) +
+  geom_line(aes(x = m, y = OOB_error_rate)) +
+  labs(x = "'M' Variables Sampled per Forest", y = "Estimated OOB_error_rate") +
+  ggtitle("Estimated OOB Error Rate by Number of Sampled Variables")
+
+# Looking both at the chart and the graphical charting of
+# our possible values of the OOB error rate compared to the number of variables sampled per 
+# forest, the lowest OOB error rate we can get occurs when we use
+# m = 3, and that error rate is around 12.14% (0.1214735)
+
+# Looking at this, it appears that our initial base model will also be our
+# final model. 
+
+final_forest <- baseforest # storing our base forest in a new variable for the 
+# forest we decided to go with
+final_forest
+# Call:
+#   randomForest(formula = outcome_bin ~ ., data = train.df, ntree = 1000,      mtry = 3, importance = TRUE) 
+# Type of random forest: classification
+# Number of trees: 1000
+# No. of variables tried at each split: 3
+# 
+# OOB estimate of  error rate: 12.11%
+# Confusion matrix:
+#        No   Yes class.error
+# No  10454  1712    0.140720
+# Yes  1138 10232    0.100088
+
+# PREDICTIONS BASED ON FINAL FOREST --------
+# Create ROC Curve
+# Assume positive event is "Yes" as we are wanting to determine what
+# leads to a cat being adopted or returned to their owner!
+pi_hat <- predict(final_forest, test.df, type = "prob")[, "Yes"]
+
+rocCurve <- roc(response = test.df$outcome_bin, 
+                predictor = pi_hat, 
+                levels = c("No", "Yes")) # Order for levels matters
+# First is negative event, then positive event
+plot(rocCurve, print.thres = TRUE, print.auc = TRUE)
+
+# Interpretations of pi*, specificity, and sensitivity
+# If we set pi* = 0.587, then we can achieve a specificity of 0.889
+# and a sensitivity of 0.872. 
+
+# In other words, when a cat is adopted or returned to their owner, we correctly
+# predict this outcome about 87.2% of the time. (specificity interpretation)
+# Additionally, when we predict that a cat will not be adopted or returned to their owner, 
+# we correctly predict this scenario around 88.9% of the time. (specificity interpretation)
+
+# The AUC for our rocCurve is 0.949, which we think is good since
+# a better AUC will be closer to 1. 
+
+# Make predictions on our test data
+# extract pi* - need for good predictions
+# (that maximize sensitivity and specificity)
+pi_star <- coords(rocCurve, "best", ret = "threshold")$threshold[1]
+# Interpretation of pi_star
+# If the forest predicts an Adoption / Return to Owner probability 
+# greater than 0.5865 (pi_star), then we predict that a cat will be
+# going home with someone. Otherwise, we predict they will not adopted or 
+# returned to their owner. 
+
+# The following line creates predictions that are consistent with the 
+# above statements about AUC, pi_hat, specificity, and sensitivity
+test.df$forest_pred <- as.factor(ifelse(pi_hat > pi_star, "Yes", "No"))
+
+
+# INTERPRETATIONS UTILIZING FINAL FOREST -----------
+# utilizing random forest to get a ranked list of variable importance
+# to be used in our model creation
+
+varImpPlot(final_forest, type = 1)
+# all of our "MeanDecreaseAccuracy" values are positive, 
+# that means each variable helped the model, though to very different degrees
+# Somewhat interestingly, we can see that the length of a cat's name (name_length)
+# appears to be the most important variable for prediction in our data set
+# Other important variables are ranked as follows:
+# Grouped closely to each other: 
+  # (2) Spay.Neuter and (3) outcome_age_group
+# By itself: (4) outcome_hour
+# By itself: (5) outcome_weekday
+# Grouped together: (6) sex and (7) season_outcome
+# Last group of variables: (8) domestic_breed and (9) cfa_breed
+
+# After gaining further context about which variables appear most important,
+# we can utilize the results to create an appropriate model using logistic regression. 
+# We do this because logistic regression one of its benefits over random forests is
+# that we can easily make interpretations based on our results.  
+# The reason we didn't skip creating a random forest is that it 
+# allowed us to create predictions and determine which 
+# variables are most important for a logistic regression model. 
+
+## MODEL CREATION THROUGH LOGISTIC REGRESSION
+# We chose to create a model with the Bernoulli random variable component and 
+# the logit link to fit our binary response variable. 
 
 
