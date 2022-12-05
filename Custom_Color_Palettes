@@ -1,0 +1,7 @@
+
+## Messing around with R Color Palette and dplyr
+cat_colors <- c("#6d7771", "#411900", "#9B4722", 
+                "#E1C6CC", "#FFFDD0", "#3E3526")
+# blue = #6d7771, chocolate = #411900, 
+# cinnamon = #9B4722, lilac = #E1C6CC, cream = #FFFDD0, sable = #3E3526
+
