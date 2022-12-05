@@ -1,6 +1,13 @@
 # ReadMe: Deliverable for Purrfect Match Cats & Co. 
 
+Purrfect Match Cats & Co. is an non-profit animal shelter with multiple locations in the Greater Des Moines area that houses thousands of animals yearly. Their goal is to find the "perfect match" for the animals in their care by helping to get them adopted, or reunited with their owners. 
+
+### Summary
+
+
 *Data Source:* The data used is titled "Austin Animal Center Shelter Outcomes" and can be found on Kaggle. The original intention of this dataset was to provide outcomes for cats in the Austin Animal Center Shelter, but was repurposed for the use of this project. 
+
+
 
 
 Information that we need to incorporate into our ReadMe file (as a start) is as follows:
