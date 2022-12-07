@@ -381,4 +381,52 @@ varImpPlot(final_forest, type = 1)
 # We chose to create a model with the Bernoulli random variable component and 
 # the logit link to fit our binary response variable. 
 
+m1 <- glm(outcome_bin ~ name_length, data = cats,
+          family = binomial(link = "logit"))
+AIC(m1) # 33440.12
+BIC(m1) # 33456.69
 
+# next two important are Spay.Neuter & outcome_age_group
+m2 <- glm(outcome_bin ~ name_length + Spay.Neuter + outcome_age_group, 
+          data = cats, family = binomial(link = "logit"))
+AIC(m2) # 23206.27
+BIC(m2) # 23272.59
+# vast improvement from the first model, both AIC and BIC have decreased
+
+# next important is outcome_hour
+m3 <- glm(outcome_bin ~ name_length + Spay.Neuter + outcome_age_group +
+            outcome_hour,
+          data = cats, family = binomial(link = "logit"))
+AIC(m3) # 21489.87
+BIC(m3) # 21564.48
+
+# next important is outcome_weekday
+m4 <- glm(outcome_bin ~ name_length + Spay.Neuter + outcome_age_group +
+            outcome_hour + outcome_weekday, 
+          data = cats, family = binomial(link = "logit"))
+AIC(m4) # 20974.08
+BIC(m4) # 21098.42
+
+# next two important are sex & season_outcome
+m5 <- glm(outcome_bin ~ name_length + Spay.Neuter + outcome_age_group +
+            outcome_hour + outcome_weekday + sex + season_outcome, 
+          data = cats, family = binomial(link = "logit"))
+AIC(m5) # 20883.27
+BIC(m5) # 21040.77
+
+# next two important are domestic_breed & cfa_breed
+m6 <- glm(outcome_bin ~ name_length + Spay.Neuter + outcome_age_group +
+            outcome_hour + outcome_weekday + sex + season_outcome +
+            domestic_breed + cfa_breed, 
+          data = cats, family = binomial(link = "logit"))
+AIC(m6) # 20822.03
+BIC(m6) # 20996.11
+
+# our sixth and final model is our best performing, with the lowest AIC & BIC
+# values, we would use this model to make our interpretations
+
+final_model <- glm(outcome_bin ~ name_length + Spay.Neuter + outcome_age_group +
+            outcome_hour + outcome_weekday + sex + season_outcome +
+            domestic_breed + cfa_breed, 
+          data = cats, family = binomial(link = "logit"))
+summary(final_model)
