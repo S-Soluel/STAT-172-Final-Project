@@ -512,3 +512,285 @@ ggplot(data = cats) +
 # general downward trend for this subset of cats
 # could imply that potential adopters do not care about spay/neutering 
 # the older the cat is
+
+# R code for getting coefficients and confidence intervals ----------
+#                                 Estimate  Std. Error z value Pr(>|z|) 
+# (Intercept)                    -6.278657   0.415560 -15.109  < 2e-16 ***
+#   name_length                   0.277979   0.005857  47.464  < 2e-16 ***
+#   Spay.NeuterYes                2.733662   0.050528  54.101  < 2e-16 ***
+#   outcome_age_group1-3 months   2.819162   0.061116  46.128  < 2e-16 ***
+#   outcome_age_group3-6 months   1.889418   0.076400  24.731  < 2e-16 ***
+#   outcome_age_group6-12 months  0.658901   0.065440  10.069  < 2e-16 ***
+#   outcome_age_group1-10 years   0.698195   0.061474  11.358  < 2e-16 ***
+#   outcome_age_group10+ years    0.640101   0.106874   5.989  2.11e-09 ***
+#   outcome_hour                  0.187533   0.005104  36.742  < 2e-16 ***
+#   outcome_weekdayMonday        -0.215718   0.065935  -3.272  0.00107 ** 
+#   outcome_weekdaySaturday       0.823268   0.064877  12.690  < 2e-16 ***
+#   outcome_weekdaySunday         0.565916   0.065643   8.621  < 2e-16 ***
+#   outcome_weekdayThursday      -0.175065   0.067886  -2.579  0.00991 ** 
+#   outcome_weekdayTuesday       -0.205153   0.064037  -3.204  0.00136 ** 
+#   outcome_weekdayWednesday     -0.146139   0.066249  -2.206  0.02739 *  
+#   sexMale                       0.240743   0.035865   6.712  1.91e-11 ***
+#   season_outcomeSummer          0.230451   0.051821   4.447  8.71e-06 ***
+#   season_outcomeFall           -0.009918   0.052539  -0.189  0.85027    
+#   season_outcomeWinter          0.279770   0.055576   5.034  4.80e-07 ***
+#   domestic_breedTrue           -1.163966   0.400486  -2.906  0.00366 ** 
+#   cfa_breedTrue                -0.604301   0.394852  -1.530  0.12591
+
+# Statistical Analysis -----
+
+beta_hat <- coef(final_model)
+#maximum likelihood estimates of odds ratios (exp(beta))
+exp(beta_hat)
+
+# (Intercept)                   0.001875919                
+# name_length                   1.320457999      
+# Spay.NeuterYes                15.389133058 
+# outcome_age_group1-3 months   16.762795658                                  
+# outcome_age_group3-6 months   6.615518898
+# outcome_age_group6-12 months  1.932666976 
+# outcome_age_group1-10 years   2.010121017 
+# outcome_age_group10+ years    1.896673058
+# outcome_hour                  1.206270344
+# outcome_weekdayMonday         0.805962167
+# outcome_weekdaySaturday       2.277931356 
+# outcome_weekdaySunday         1.761059511 
+# outcome_weekdayThursday       0.839402294 
+# outcome_weekdayTuesday        0.814522845
+# outcome_weekdayWednesday      0.864037972
+# sexMale                       1.272194284
+# season_outcomeSummer          1.259168380
+# season_outcomeFall            0.990130720 
+# season_outcomeWinter          1.322825318 
+# domestic_breedTrue            0.312245468 
+# cfa_breedTrue                 0.546456449 
+
+confint(final_model)#conf int for beta
+
+#                                  2.5 %      97.5 %
+# (Intercept)                  -7.1089653 -5.47222729
+# name_length                   0.2665403  0.28949914
+# Spay.NeuterYes                2.6352576  2.83334146
+# outcome_age_group1-3 months   2.6999704  2.93955884
+# outcome_age_group3-6 months   1.7401453  2.03964676
+# outcome_age_group6-12 months  0.5308419  0.78738404
+# outcome_age_group1-10 years   0.5779620  0.81895635
+# outcome_age_group10+ years    0.4310385  0.85006947
+# outcome_hour                  0.1775772  0.19758586
+# outcome_weekdayMonday        -0.3450045 -0.08652874
+# outcome_weekdaySaturday       0.6962772  0.95060352
+# outcome_weekdaySunday         0.4373778  0.69470868
+# outcome_weekdayThursday      -0.3081601 -0.04203955
+# outcome_weekdayTuesday       -0.3307162 -0.07968091
+# outcome_weekdayWednesday     -0.2760152 -0.01631018
+# sexMale                       0.1704670  0.31106209
+# season_outcomeSummer          0.1289115  0.33205743
+# season_outcomeFall           -0.1129246  0.09303567
+# season_outcomeWinter          0.1708804  0.38874634
+# domestic_breedTrue           -1.9413939 -0.36288649
+# cfa_breedTrue                -1.3704453  0.18630747
+
+
+exp(confint(final_model))#conf int for exp(beta)
+
+#                                   2.5 %       97.5 %
+# (Intercept)                  8.177407e-04  0.004201863
+# name_length                  1.305440e+00  1.335758287
+# Spay.NeuterYes               1.394690e+01 17.002178181
+# outcome_age_group1-3 months  1.487929e+01 18.907503184
+# outcome_age_group3-6 months  5.698171e+00  7.687893052
+# outcome_age_group6-12 months 1.700363e+00  2.197639960
+# outcome_age_group1-10 years  1.782402e+00  2.268131477
+# outcome_age_group10+ years   1.538855e+00  2.339809396
+# outcome_hour                 1.194320e+00  1.218457680
+# outcome_weekdayMonday        7.082172e-01  0.917109189
+# outcome_weekdaySaturday      2.006270e+00  2.587270659
+# outcome_weekdaySunday        1.548641e+00  2.003125436
+# outcome_weekdayThursday      7.347977e-01  0.958831857
+# outcome_weekdayTuesday       7.184090e-01  0.923410950
+# outcome_weekdayWednesday     7.588014e-01  0.983822110
+# sexMale                      1.185859e+00  1.364873959
+# season_outcomeSummer         1.137589e+00  1.393832899
+# season_outcomeFall           8.932180e-01  1.097500882
+# season_outcomeWinter         1.186349e+00  1.475130321
+# domestic_breedTrue           1.435038e-01  0.695665396
+# cfa_breedTrue                2.539938e-01  1.204792644
+
+# Linear Predictor for final model -----
+# ni = -6.278 + (0.278)name_length + (2.733)Spay.NueterYes
+# + (2.818)outcome_age_group1-3 months + (1.889)outcome_age_group3-6 months 
+# + (0.658)outcome_age_group6-12 months + (0.697)outcome_age_group1-10 years 
+# + (0.639)outcome_age_group10+ years + (0.187)outcome_hour 
+# - (0.215)outcome_weekdayMonday + (0.823)outcome_weekdaySaturday
+# + (0.565)outcome_weekdaySunday - (0.175)outcome_weekdayThursday
+# - (0.205)outcome_weekdayTuesday - (0.146)outcome_weekdayWednesday 
+# + (0.240)sexMale + (0.230)season_outcomeSummer 
+# - (0.009)season_outcomeFall + (0.279)season_outcomeWinter
+# - (1.164)domestic_breedTrue - (0.604)cfa_breedTrue
+
+# Statistical Coefficient Interpretations -----
+
+# For context of interpretations, the y variable of outcome_bin is "Yes" 
+# (Cat had outcome of adopted) or "No" (cat did not have outcome of adopted). 
+
+#Coefficient Interpretations
+#b0: e^b0 is the odds that a cat is adopted when all explanatory variables 
+# are set to 0. The odds of a cat being adopted that has a name length of 0, 
+# was not spayed/neutered, was in the outcome age group for 0-1 months, 
+# had been adopted at the 0th hour of the day, was adopted on Friday, 
+# is female, was adopted in the season of Spring, was not a domestic breed, 
+# and was not a CFA(Cat Fanciers' Association) breed is e^-6.27 = 0.0018. 
+
+#b1: Holding all factors constant, the odds of a cat being adopted change by 
+# a factor of e^0.277 = 1.319 for each additional letter/character added to 
+# the name length of a cat.
+
+#b2: Holding all factors constant, the odds of a cat being adopted that is spayed/neutered
+# is e^2.733 = 15.378 times the odds of a cat being adopted that is not spayed/neutered. 
+
+#b3: Holding all factors constant, the odds of a cat being adopted that is in the 
+# outcome age group of 1-3 months is e^2.819 = 16.760 times the odds of a cat being adopted 
+# that is in the outcome age group of 0-1 months.
+
+#b4: Holding all factors constant, the odds of a cat being adopted that is in the 
+# outcome age group of 3-6 months is e^1.889 = 6.612 times the odds of a cat being adopted 
+# that is in the outcome age group of 0-1 months. 
+
+#b5: Holding all factors constant, the odds of a cat being adopted that is in the 
+# outcome age group of 6-12 months is e^0.658 = 1.930 times the odds of a cat being adopted 
+# that is in the outcome age group of 0-1 months. 
+
+#b6: Holding all factors constant, the odds of a cat being adopted that is in the 
+# outcome age group of 1-10 years is e^0.698 = 2.009 times the odds of a cat being adopted 
+# that is in the outcome age group of 0-1 months.
+
+#b7: Holding all factors constant, the odds of a cat being adopted that is in the 
+# outcome age group of 10+ years is e^.640 = 1.896 times the odds of a cat being adopted 
+# that is in the outcome age group of 0-1 months. 
+
+#b8: Holding all factors constant, the odds of a cat being adopted change by 
+# a factor of e^0.187 = 1.205 for each additional hour in the day that the cat was adopted.
+
+#b9: Holding all factors constant, the odds of a cat being adopted that happened on 
+# a Monday is e^-0.215 = 0.806 times the odds of a cat being adopted on Friday.
+
+#b10: Holding all factors constant, the odds of a cat being adopted that happened on 
+# a Saturday is e^0.565 = 1.759 times the odds of a cat being adopted on Friday.
+
+#b11: Holding all factors constant, the odds of a cat being adopted that happened on 
+# a Sunday is e^0.823 = 2.277 times the odds of a cat being adopted on Friday.
+
+#b12: Holding all factors constant, the odds of a cat being adopted that happened on 
+# a Thursday is e^-0.175 = 0.839 times the odds of a cat being adopted on Friday.
+
+#b13: Holding all factors constant, the odds of a cat being adopted that happened on 
+# a Tuesday is e^-0.205 = 0.814 times the odds of a cat being adopted on Friday.
+
+#b14: Holding all factors constant, the odds of a cat being adopted that happened on 
+# a Wednesday is e^-0.146 = 0.864 times the odds of a cat being adopted on Friday.
+
+#b15: Holding all factors constant, the odds of a cat being adopted that is male is 
+# e^0.240 = 1.271 times the odds of a cat being adopted that is female.
+
+#b16: Holding all factors constant, the odds of a cat being adopted that happened 
+# in Spring is e^0.230 = 1.258 times the odds of a cat being adopted in Summer.
+
+#b17: Holding all factors constant, the odds of a cat being adopted that happened 
+# in Spring is e^-0.009 = 0.991 times the odds of a cat being adopted in Fall.
+
+#b18: Holding all factors constant, the odds of a cat being adopted that happened 
+# in Spring is e^0.279 = 1.321 times the odds of a cat being adopted in Winter. 
+
+#b19: Holding all factors constant, the odds of a cat being adopted that is a 
+# domestic breed is e^-1.163 = 0.312 times the odds of cat being adopted
+# that is not a domestic breed.
+
+#b20: Holding all factors constant, the odds of a cat being adopted that is a
+# CFA(Cat Fanciers' Association) breed is e^0.546 = 0.546 times the odds
+# of a cat being adopted that was not a CFA breed. 
+
+# COnfidence Interval Interpretations
+# B1: Holding all factors constant, we are 95% confident that the odds of a 
+# cat being adopted change by a factor between the interval of (1.305 , 1.335) for 
+# each additional letter/character added to the name of the cat. 
+
+# B2: Holding all factors constant, we are 95% confident that the odds of a spayed/neutered 
+# cat being adopted is in the range of (13.946 and 17.002) times the odds of a 
+# non spayed/neutered cat being adopted. 
+
+# B3: Holding all factors constant, we are 95% confident that the odds of a cat adopted
+# that is in outcome age group of 1-3 months is in the range of (14.879 , 18.907)
+# times the odds of a cat being adopted that is in the outcome age group of 0-1 months. 
+
+# B4: Holding all factors constant, we are 95% confident that the odds of a cat adopted
+# that is in outcome age group of 3-6 months is in the range of (5.698 , 7.687)
+# times the odds of a cat being adopted that is in the outcome age group of 0-1 months.
+
+# B5: Holding all factors constant, we are 95% confident that the odds of a cat adopted
+# that is in outcome age group of 6-12 months is in the range of (1.700 , 2.197)
+# times the odds of a cat being adopted that is in the outcome age group of 0-1 months. 
+
+# B6: Holding all factors constant, we are 95% confident that the odds of a cat adopted
+# that is in outcome age group of 1-10 years is in the range of (1.782 , 2.268)
+# times the odds of a cat being adopted that is in the outcome age group of 0-1 months. 
+
+# B7: Holding all factors constant, we are 95% confident that the odds of a cat adopted
+# that is in outcome age group of 10+ years is in the range of (1.538 , 2.339)
+# times the odds of a cat being adopted that is in the outcome age group of 0-1 months.
+
+# B8: Holding all factors constant, we are 95% confident that the odds of a 
+# cat being adopted change by a factor between the interval of (1.305 , 1.335) for 
+# each hour in the day that a cat had been adopted. 
+
+# B9: Holding all factors constant, we are 95% confident that the odds of a cat adopted
+# that happened on a Monday is in the range of (0.708 , 1.218) times the odds of a cat
+# being adopted on a Friday.
+
+# B9: Holding all factors constant, we are 95% confident that the odds of a cat adopted
+# that happened on a Monday is in the range of (0.708 , 1.218) times the odds of a cat
+# being adopted on a Friday. 
+
+# B10: Holding all factors constant, we are 95% confident that the odds of a cat adopted
+# that happened on a Saturday is in the range of (2.006 , 2.587) times the odds of a cat
+# being adopted on a Friday. 
+
+# B11: Holding all factors constant, we are 95% confident that the odds of a cat adopted
+# that happened on a Sunday is in the range of (1.548 , 2.003) times the odds of a cat
+# being adopted on a Friday. 
+
+# B12: Holding all factors constant, we are 95% confident that the odds of a cat adopted
+# that happened on a Thursday is in the range of (0.073 , 0.958) times the odds of a cat
+# being adopted on a Friday. 
+
+# B13: Holding all factors constant, we are 95% confident that the odds of a cat adopted
+# that happened on a Tuesday is in the range of (0.071 , 0.923) times the odds of a cat
+# being adopted on a Friday. 
+
+# B14: Holding all factors constant, we are 95% confident that the odds of a cat adopted
+# that happened on a Wednesday is in the range of (0.075 , 0.983) times the odds of a cat
+# being adopted on a Friday. 
+
+# B15: Holding all factors constant, we are 95% confident that the odds of a cat being 
+# adopted that is male is in the range of (1.185 , 1.364) times the odds of a cat being 
+# adopted that is female. 
+
+# B16: Holding all factors constant, we are 95% confident that the odds of a cat being
+# adopted in the Summer is in the range of (1.137 , 1.393) times the odds of a cat being 
+# adopted in the Spring. 
+
+# B17: Holding all factors constant, we are 95% confident that the odds of a cat being
+# adopted in the Fall is in the range of (1.137 , 1.393) times the odds of a cat being 
+# adopted in the Spring.  
+
+# B18: Holding all factors constant, we are 95% confident that the odds of a cat being
+# adopted in the Winter is in the range of (1.137 , 1.393) times the odds of a cat being 
+# adopted in the Spring.  
+
+# B19: Holding all factors constant, we are 95% confident that the odds of a cat being 
+# adopted that is a domestic breed is in the range of (0.143 , 0.695) times the odds
+# of a cat being adopted that is not a domestic breed.
+
+# B20: Holding all factors constant, we are 95% confident that the odds of a cat being
+# adopted that is a CFA(Cat Fanciers' Association) breed is in the range of 
+# (0.253 , 1.204) times the odds of a cat being adopted that is not a 
+# CFA(Cat Fanciers' Association) breed.
