@@ -513,7 +513,7 @@ ggplot(data = cats) +
 # could imply that potential adopters do not care about spay/neutering 
 # the older the cat is
 
-
+# R code for getting coefficients and confidence intervals ----------
 #                                 Estimate  Std. Error z value Pr(>|z|) 
 # (Intercept)                    -6.278657   0.415560 -15.109  < 2e-16 ***
 #   name_length                   0.277979   0.005857  47.464  < 2e-16 ***
@@ -633,7 +633,8 @@ exp(confint(final_model))#conf int for exp(beta)
 # For context of interpretations, the y variable of outcome_bin is "Yes" 
 # (Cat had outcome of adopted) or "No" (cat did not have outcome of adopted). 
 
-#B0: e^b0 is the odds that a cat is adopted when all explanatory variables 
+#Coefficient Interpretations
+#b0: e^b0 is the odds that a cat is adopted when all explanatory variables 
 # are set to 0. The odds of a cat being adopted that has a name length of 0, 
 # was not spayed/neutered, was in the outcome age group for 0-1 months, 
 # had been adopted at the 0th hour of the day, was adopted on Friday, 
@@ -671,22 +672,22 @@ exp(confint(final_model))#conf int for exp(beta)
 # a factor of e^0.187 = 1.205 for each additional hour in the day that the cat was adopted.
 
 #b9: Holding all factors constant, the odds of a cat being adopted that happened on 
-# a Friday is e^-0.215 = 0.806 times the odds of a cat being adopted on Monday.
+# a Monday is e^-0.215 = 0.806 times the odds of a cat being adopted on Friday.
 
 #b10: Holding all factors constant, the odds of a cat being adopted that happened on 
-# a Friday is e^0.565 = 1.759 times the odds of a cat being adopted on Saturday.
+# a Saturday is e^0.565 = 1.759 times the odds of a cat being adopted on Friday.
 
 #b11: Holding all factors constant, the odds of a cat being adopted that happened on 
-# a Friday is e^0.823 = 2.277 times the odds of a cat being adopted on Sunday.
+# a Sunday is e^0.823 = 2.277 times the odds of a cat being adopted on Friday.
 
 #b12: Holding all factors constant, the odds of a cat being adopted that happened on 
-# a Friday is e^-0.175 = 0.839 times the odds of a cat being adopted on Thursday.
+# a Thursday is e^-0.175 = 0.839 times the odds of a cat being adopted on Friday.
 
 #b13: Holding all factors constant, the odds of a cat being adopted that happened on 
-# a Friday is e^-0.205 = 0.814 times the odds of a cat being adopted on Tuesday.
+# a Tuesday is e^-0.205 = 0.814 times the odds of a cat being adopted on Friday.
 
 #b14: Holding all factors constant, the odds of a cat being adopted that happened on 
-# a Friday is e^-0.146 = 0.864 times the odds of a cat being adopted on Wednesday.
+# a Wednesday is e^-0.146 = 0.864 times the odds of a cat being adopted on Friday.
 
 #b15: Holding all factors constant, the odds of a cat being adopted that is male is 
 # e^0.240 = 1.271 times the odds of a cat being adopted that is female.
@@ -708,8 +709,7 @@ exp(confint(final_model))#conf int for exp(beta)
 # CFA(Cat Fanciers' Association) breed is e^0.546 = 0.546 times the odds
 # of a cat being adopted that was not a CFA breed. 
 
-
-
+# COnfidence Interval Interpretations
 # B1: Holding all factors constant, we are 95% confident that the odds of a 
 # cat being adopted change by a factor between the interval of (1.305 , 1.335) for 
 # each additional letter/character added to the name of the cat. 
