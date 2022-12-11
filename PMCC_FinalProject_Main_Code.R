@@ -430,3 +430,85 @@ final_model <- glm(outcome_bin ~ name_length + Spay.Neuter + outcome_age_group +
             domestic_breed + cfa_breed, 
           data = cats, family = binomial(link = "logit"))
 summary(final_model)
+
+# VISUALIZATIONS --------------
+
+# let's look at name_length
+ggplot(data = cats) +
+  geom_histogram(aes(x = name_length)) +
+  labs(x = "Name Length", y = "Amount of Cats") +
+  ggtitle("Distribution of Name Lengths") 
+# lots of no-names here, let's approach this variable from another angle
+
+ggplot(data = cats) + 
+  geom_boxplot(aes(x = name_length))
+
+ggplot(data = cats) + 
+  geom_boxplot(aes(x = name_length, y = outcome_bin)) +
+  labs(x = "Name Length", y = "Adoption Outcome") +
+  ggtitle("Distribution of Name Lengths") 
+
+# (graph included in the supplement document)
+ggplot(data = cats) +
+  geom_violin(aes(x = name_length, y = outcome_bin, fill = outcome_bin)) +
+  # geom_jitter(aes(x = name_length, y = outcome_bin, fill = outcome_bin)) +
+  labs(x = "Name Length", y = "Adoption Outcome") + 
+  ggtitle("Distribution of Name Lengths vs Adoption Outcome") +
+  scale_fill_manual(values = c("#6d7771", "#FFFDD0"), 
+                    name = "Adoption \nOutcome")
+# can see the frequencies in each graph, more no-named cats that resulted in
+# no adoption as opposed to getting adopted
+# cats that have more "traditional" names that fall between 4-7 letters
+# were adopted at a higher frequency
+
+# let's look at season_outcome
+ggplot(data = cats) +
+  geom_bar(aes(x = season_outcome))
+
+ggplot(data = cats) +
+  geom_bar(aes(x = season_outcome, fill = outcome_bin, colour = outcome_bin)) +
+  scale_fill_grey("Adoption \nOutcome")
+
+# (graph included in the supplement document)
+ggplot(data = cats) +
+  geom_bar(aes(x = season_outcome, fill = outcome_bin), position = "fill") +
+  labs(x = "Season of the Outcome", y = "Amount of Cats") + 
+  ggtitle("Distribution of Seasons vs Adoption Outcome") +
+  scale_fill_manual(values = c("#6D7771", "#FFFDD0"), 
+                    name = "Adoption \nOutcome")
+# general trend that the further along in the year, the higher the adoption rate
+# could relate to the holidays in the winter, wanting to adopt
+
+# let's look at sex and spay.neuter
+ggplot(data = cats) +
+  geom_bar(aes(x = sex, fill = outcome_bin), position = "fill")
+
+# without fill to understand frequency distributions
+# (graph included in the supplement document)
+ggplot(data = cats) +
+  geom_bar(aes(x = outcome_age_group, fill = outcome_bin)) +
+  labs(x = "Age Group", y = "Proportion") + 
+  facet_wrap(~Spay.Neuter, nrow = 2, labeller = labels) +
+  scale_fill_manual(values = c("#6D7771", "#FFFDD0"), 
+                    name = "Adoption \nOutcome") +
+  coord_flip() +
+  ggtitle("Outcomes of Spay/Neuter by Age Group")
+# generally a higher amount of cats that have been spayed/neutered
+# furthermore, those cats are more likely to get adopted
+# let's look at the proportions in a more meaningful way
+
+labels <- as_labeller(c("No" = "Not Spayed or Neutered", "Yes" = "Spayed or Neutered"))
+# with fill to understand proportions
+# (graph included in the supplement document)
+ggplot(data = cats) +
+  geom_bar(aes(x = outcome_age_group, fill = outcome_bin), position = "fill") +
+  labs(x = "Age Group", y = "Proportion") + 
+  facet_wrap(~Spay.Neuter, nrow = 2, labeller = labels) +
+  scale_fill_manual(values = c("#6D7771", "#FFFDD0"), 
+                    name = "Adoption \nOutcome") +
+  coord_flip() +
+  ggtitle("Outcomes of Spay/Neuter by Age Group")
+# higher proportions of adoption for cats that have spayed/neutered
+# general downward trend for this subset of cats
+# could imply that potential adopters do not care about spay/neutering 
+# the older the cat is
